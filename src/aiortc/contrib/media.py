@@ -121,6 +121,12 @@ def player_worker(
             ):
                 frame.pts = None
                 frame = audio_resampler.resample(frame)
+                # For some reason when lower sampling rate is used, resampler
+                # will return first frame as None. Later frame seems to be
+                # fine.
+                if frame is None:
+                    print('PyAv: dropped audio frame')
+                    continue
 
             # fix timestamps
             frame.pts = audio_samples
